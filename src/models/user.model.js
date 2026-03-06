@@ -16,4 +16,12 @@ async function createUser({ email, passwordHash, role = "ALUMNUS" }) {
   return { id: result.insertId, email, role, is_verified: 0 };
 }
 
+async function verifyUser(userId) {
+    await pool.query(
+      "UPDATE users SET is_verified = 1 WHERE id = ?",
+      [userId]
+  );
+}
+
+
 module.exports = { findByEmail, createUser };

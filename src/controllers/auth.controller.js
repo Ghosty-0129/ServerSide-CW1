@@ -100,4 +100,47 @@ async function login(req, res, next) {
   }
 }
 
-module.exports = { register, login };
+async function verifyEmailOtp(req, res, next) {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ message: "Email and OTP are required" });
+    }
+
+    const user = await User.findByEmail(email.toLowerCase());
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or OTP" });
+    }
+
+    if (user.is_verified) {
+      return res.status(400).json({ message: "Email already verified" });
+    }
+
+    const otpRecord = await EmailVerificationOtp.findByUserId(user.id);
+    if (!otpRecord) {
+      return res.status(400).json({ message: "No OTP found for this user" });
+    }
+
+    if (new Date() > new Date(otpRecord.expires_at)) {
+      await EmailVerificationOtp.deleteById(otpRecord.id);
+      return res.status(400).json({ message: "OTP has expired" });
+    }
+
+    const incomingHash = hashOtp(otp);
+
+    if (incomingHash !== otpRecord.otp_hash) {
+      await EmailVerificationOtp.incrementAttempts(otpRecord.id);
+      return res.status(400).json({ message: "Invalid email or OTP" });
+    }
+
+    await User.verifyUser(user.id);
+    await EmailVerificationOtp.deleteById(otpRecord.id);
+
+    return res.json({ message: "Email verified successfully" });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { register, login, verifyEmailOtp };
