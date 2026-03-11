@@ -8,7 +8,7 @@ async function findByEmail(email) {
   return rows[0] || null;
 }
 
-async function createUser({ email, passwordHash, role = "ALUMNUS" }) {
+async function createUser({ email, passwordHash, role }) {
   const [result] = await pool.query(
     "INSERT INTO users (email, password_hash, role, is_verified) VALUES (?, ?, ?, 0)",
     [email, passwordHash, role]
@@ -24,4 +24,4 @@ async function verifyUser(userId) {
 }
 
 
-module.exports = { findByEmail, createUser };
+module.exports = { findByEmail, createUser, verifyUser };

@@ -1,6 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
+const EmailVerificationOtp = require("../models/emailVerificationOtp.model");
+const { generateOtp, hashOtp } = require("../utils/otp");
+const { sendVerificationOtp } = require("../utils/mailer");
 
 function isStrongPassword(pw) {
   return (
@@ -29,7 +32,7 @@ function signToken(payload) {
 
 async function register(req, res, next) {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required" });
@@ -54,7 +57,19 @@ async function register(req, res, next) {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const user = await User.createUser({ email: email.toLowerCase(), passwordHash });
+    const user = await User.createUser({ email: email.toLowerCase(), passwordHash, role: role });
+
+    const otp = generateOtp();
+    const otpHash = hashOtp(otp);
+
+    const expiresAt = new Date(
+      Date.now() + (Number(process.env.OTP_EXPIRES_MINUTES || 10) * 60 * 1000)
+    );
+
+    await EmailVerificationOtp.deleteByUserId(user.id);
+    await EmailVerificationOtp.create(user.id, otpHash, expiresAt);
+
+    await sendVerificationOtp(user.email, otp);
 
     return res.status(201).json({
       message: "Registered successfully. Please verify your email before logging in.",
