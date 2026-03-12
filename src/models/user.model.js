@@ -23,5 +23,12 @@ async function verifyUser(userId) {
   );
 }
 
+async function updatePassword(userId, passwordHash) {
+  await pool.query(
+    "UPDATE users SET password_hash = ? WHERE id = ?",
+    [passwordHash, userId]
+  );
+}
 
-module.exports = { findByEmail, createUser, verifyUser };
+
+module.exports = { findByEmail, createUser, verifyUser, updatePassword };
