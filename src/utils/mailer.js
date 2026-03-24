@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-const transponder = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
         user: process.env.EMAIL_USER,
@@ -10,7 +10,7 @@ const transponder = nodemailer.createTransport({
 });
 
 async function sendVerificationOtp(email, otp) {
-    await transponder.sendMail({
+    await transporter.sendMail({
         from: process.env.EMAIL_FROM,
         to: email,
         subject: "Email Verification",
