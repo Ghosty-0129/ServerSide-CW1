@@ -5,6 +5,7 @@ const rateLimit = require("express-rate-limit");
 
 const authRoutes = require("./routes/auth.routes");
 const profileRoutes = require("./routes/profile.routes");
+const bidRoutes     = require("./routes/bid.routes");
 const notFound = require("./middleware/notFound");
 const errorHandler = require("./middleware/errorHandler");
 
@@ -16,7 +17,7 @@ app.use(helmet());
 // Body parsing
 app.use(express.json({ limit: "1mb" }));
 
-// CORS (keep simple for now; tighten later)
+// CORS
 app.use(cors());
 
 // Basic rate limiting on auth endpoints
@@ -31,6 +32,7 @@ app.use("/api/auth", authLimiter);
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/profile",       profileRoutes);
+app.use("/api/bids",          bidRoutes);
 
 // Health check
 app.get("/health", (req, res) => res.json({ ok: true }));
