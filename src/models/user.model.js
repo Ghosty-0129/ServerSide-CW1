@@ -16,6 +16,18 @@ async function createUser({ email, passwordHash, role }) {
   return { id: result.insertId, email, role, is_verified: 0 };
 }
 
+async function findById(id) {
+  const [rows] = await pool.query(
+    "SELECT id, email, role, is_verified FROM users WHERE id = ? LIMIT 1",
+    [id]
+  );
+  return rows[0] || null;
+}
+
+async function findByEmail_orById(userId) {
+  return findById(userId);
+}
+
 async function verifyUser(userId) {
     await pool.query(
       "UPDATE users SET is_verified = 1 WHERE id = ?",
@@ -31,4 +43,4 @@ async function updatePassword(userId, passwordHash) {
 }
 
 
-module.exports = { findByEmail, createUser, verifyUser, updatePassword };
+module.exports = { findByEmail, createUser, verifyUser, updatePassword, findByEmail_orById, findById };

@@ -38,8 +38,36 @@ async function sendPasswordResetOtp(email, otp) {
   });
 }
 
+async function sendBidWinNotification(email, date, amount) {
+  await transporter.sendMail({
+    from:    process.env.EMAIL_FROM,
+    to:      email,
+    subject: `🏆 You won the Alumni Spotlight for ${date}!`,
+    html: `
+      <h2>Congratulations! You are Alumni of the Day</h2>
+      <p>Your bid of <strong>£${Number(amount).toFixed(2)}</strong> was the highest for <strong>${date}</strong>.</p>
+      <p>Your profile will be featured on the AR Alumni platform for the entire day.</p>
+    `
+  });
+}
+
+async function sendBidLoseNotification(email, date) {
+  await transporter.sendMail({
+    from:    process.env.EMAIL_FROM,
+    to:      email,
+    subject: `Your bid result for ${date}`,
+    html: `
+      <h2>Bid Result</h2>
+      <p>Unfortunately your bid for <strong>${date}</strong> was not the highest.</p>
+      <p>You are welcome to bid again tomorrow for a chance to be featured as Alumni of the Day!</p>
+    `
+  });
+}
+
 
 module.exports = { 
     sendVerificationOtp, 
-    sendPasswordResetOtp 
+    sendPasswordResetOtp,
+    sendBidWinNotification,
+    sendBidLoseNotification 
 };
