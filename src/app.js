@@ -10,6 +10,7 @@ const notFound = require("./middleware/notFound");
 const apiKeyRoutes  = require("./routes/apiKey.routes");
 const publicRoutes  = require("./routes/public.routes");
 const errorHandler = require("./middleware/errorHandler");
+const { setupSwagger } = require("./docs/swagger");
 
 const app = express();
 
@@ -33,7 +34,6 @@ app.post("/api/admin/trigger-winner", protect, requireRole("admin"), async (req,
   res.json({ message: `Winner selection executed for ${targetDate}. Check /api/v1/alumni/today.` });
 });
 
-// Basic rate limiting on auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 50,
@@ -48,6 +48,8 @@ app.use("/api/profile",       profileRoutes);
 app.use("/api/bids",          bidRoutes);
 app.use("/api/admin/api-keys", apiKeyRoutes);
 app.use("/api/v1",            publicRoutes);
+
+setupSwagger(app);
 
 // Health check
 app.get("/health", (req, res) => res.json({ ok: true }));
