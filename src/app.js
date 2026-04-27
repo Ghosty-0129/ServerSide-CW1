@@ -10,6 +10,7 @@ const notFound = require("./middleware/notFound");
 const apiKeyRoutes  = require("./routes/apiKey.routes");
 const publicRoutes  = require("./routes/public.routes");
 const errorHandler = require("./middleware/errorHandler");
+const analyticsRoutes = require("./routes/analytics.routes");
 const { setupSwagger } = require("./docs/swagger");
 
 const app = express();
@@ -48,6 +49,7 @@ app.use("/api/profile",       profileRoutes);
 app.use("/api/bids",          bidRoutes);
 app.use("/api/admin/api-keys", apiKeyRoutes);
 app.use("/api/v1",            publicRoutes);
+app.use("/api/analytics",      analyticsRoutes);
 
 setupSwagger(app);
 

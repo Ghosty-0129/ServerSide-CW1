@@ -42,7 +42,7 @@ async function sendBidWinNotification(email, date, amount) {
   await transporter.sendMail({
     from:    process.env.EMAIL_FROM,
     to:      email,
-    subject: `🏆 You won the Alumni Spotlight for ${date}!`,
+    subject: `You won the Alumni Spotlight for ${date}!`,
     html: `
       <h2>Congratulations! You are Alumni of the Day</h2>
       <p>Your bid of <strong>£${Number(amount).toFixed(2)}</strong> was the highest for <strong>${date}</strong>.</p>

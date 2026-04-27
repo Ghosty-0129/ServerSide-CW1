@@ -195,3 +195,30 @@ CREATE TABLE IF NOT EXISTS api_key_usage_logs (
   INDEX idx_accessed_at (accessed_at),
   FOREIGN KEY (api_key_id) REFERENCES api_keys(id) ON DELETE CASCADE
 );
+
+-- =============================================================
+-- Part 2 Migration — AR Alumni Analytics Dashboard
+-- Run this AFTER Part 1 schema is already set up
+-- =============================================================
+
+USE phantasmagoria;
+
+-- 1. Add university_staff to users role ENUM
+ALTER TABLE users
+  MODIFY COLUMN role ENUM('alumnus', 'admin', 'university_staff') NOT NULL DEFAULT 'alumnus';
+
+-- 2. Add programme, graduation_date, industry_sector to alumni_profiles
+ALTER TABLE alumni_profiles
+  ADD COLUMN programme       VARCHAR(255) NULL AFTER linkedin_url,
+  ADD COLUMN graduation_date DATE         NULL AFTER programme,
+  ADD COLUMN industry_sector VARCHAR(255) NULL AFTER graduation_date;
+
+-- Add indexes for filter performance
+ALTER TABLE alumni_profiles
+  ADD INDEX idx_programme       (programme),
+  ADD INDEX idx_graduation_date (graduation_date),
+  ADD INDEX idx_industry_sector (industry_sector);
+
+-- 3. Add permissions column to api_keys 
+ALTER TABLE api_keys
+  ADD COLUMN permissions JSON NOT NULL DEFAULT (JSON_ARRAY()) AFTER is_active;
