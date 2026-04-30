@@ -2,16 +2,9 @@ import React from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-/**
- * ExportButton
- * Props:
- *   data        — array of objects to export as CSV
- *   filename    — base filename (no extension)
- *   pdfTargetId — id of the DOM element to capture as PDF
- */
 export default function ExportButton({ data = [], filename = "export", pdfTargetId }) {
 
-  // ── CSV Export ────────────────────────────────────────────────────────────
+  //CSV Export
   function exportCSV() {
     if (!data.length) return alert("No data to export");
 
@@ -34,7 +27,7 @@ export default function ExportButton({ data = [], filename = "export", pdfTarget
     URL.revokeObjectURL(url);
   }
 
-  // ── PDF Export ────────────────────────────────────────────────────────────
+  //PDF Export
   async function exportPDF() {
     const target = pdfTargetId
       ? document.getElementById(pdfTargetId)

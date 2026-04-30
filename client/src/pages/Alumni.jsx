@@ -13,7 +13,7 @@ export default function Alumni() {
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState("");
 
-  // Load filter options once
+  //filter
   useEffect(() => {
     getFilterOptions()
       .then(res => setOptions(res.data))
@@ -26,7 +26,6 @@ export default function Alumni() {
     setError("");
     try {
       const params = customFilters || filters;
-      // Remove empty strings
       const clean = Object.fromEntries(
         Object.entries(params).filter(([, v]) => v !== "")
       );
@@ -50,7 +49,7 @@ export default function Alumni() {
     fetchAlumni(empty);
   }
 
-  // Flatten for CSV
+  //for csv
   const csvData = alumni.map(a => ({
     name:            `${a.first_name || ""} ${a.last_name || ""}`.trim() || "—",
     email:           a.email,

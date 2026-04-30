@@ -22,7 +22,7 @@ API.interceptors.response.use(
   }
 );
 
-// ── AUTH ──────────────────────────────────────────────────────────────────────
+//AUTH
 export const register        = (data) => API.post("/auth/register", data);
 export const verifyEmail     = (data) => API.post("/auth/verify-email-otp", data);
 export const resendOtp       = (data) => API.post("/auth/resend-email-otp", data);
@@ -30,7 +30,7 @@ export const login           = (data) => API.post("/auth/login", data);
 export const forgotPassword  = (data) => API.post("/auth/forgot-password", data);
 export const resetPassword   = (data) => API.post("/auth/reset-password", data);
 
-// ── ANALYTICS (API key header injected manually for dashboard use) ─────────────
+//ANALYTICS
 const ANALYTICS_KEY = process.env.REACT_APP_ANALYTICS_KEY || "";
 
 const analyticsHeaders = () => ({
